@@ -2,6 +2,7 @@
 /* Copyright (C) 2020 MediaTek Inc. */
 
 #include <linux/fs.h>
+#include <linux/version.h>
 #include "mt7915.h"
 #include "mcu.h"
 #include "mac.h"
@@ -266,9 +267,13 @@ mt7915_mcu_rx_radar_detected(struct mt7915_dev *dev, struct sk_buff *skb)
 		mphy = dev->mt76.phy2;
 
 	if (r->band_idx == MT_RX_SEL2)
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(5, 17, 0)
 		cfg80211_background_radar_event(mphy->hw->wiphy,
 						&dev->rdd2_chandef,
 						GFP_ATOMIC);
+#else
+		;
+#endif
 	else
 		ieee80211_radar_detected(mphy->hw);
 	dev->hw_pattern++;
@@ -1731,6 +1736,7 @@ mt7915_mcu_beacon_mbss(struct sk_buff *rskb, struct sk_buff *skb,
 		       struct ieee80211_vif *vif, struct bss_info_bcn *bcn,
 		       struct ieee80211_mutable_offsets *offs)
 {
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(5, 16, 0)
 	struct bss_info_bcn_mbss *mbss;
 	const struct element *elem;
 	struct tlv *tlv;
@@ -1779,6 +1785,7 @@ mt7915_mcu_beacon_mbss(struct sk_buff *rskb, struct sk_buff *skb,
 			mbss->bitmap |= cpu_to_le32(BIT(idx->bssid_index));
 		}
 	}
+#endif
 }
 
 static void

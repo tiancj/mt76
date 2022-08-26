@@ -5,6 +5,7 @@
 #include <linux/platform_device.h>
 #include <linux/pci.h>
 #include <linux/module.h>
+#include <linux/version.h>
 #include "mt7915.h"
 #include "mcu.h"
 
@@ -1340,6 +1341,7 @@ mt7915_twt_teardown_request(struct ieee80211_hw *hw,
 	mutex_unlock(&dev->mt76.mutex);
 }
 
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(5, 17, 0)
 static int
 mt7915_set_radar_background(struct ieee80211_hw *hw,
 			    struct cfg80211_chan_def *chandef)
@@ -1388,6 +1390,7 @@ out:
 
 	return ret;
 }
+#endif
 
 #ifdef CONFIG_NET_MEDIATEK_SOC_WED
 static int
@@ -1468,7 +1471,9 @@ const struct ieee80211_ops mt7915_ops = {
 #ifdef CONFIG_MAC80211_DEBUGFS
 	.sta_add_debugfs = mt7915_sta_add_debugfs,
 #endif
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(5, 17, 0)
 	.set_radar_background = mt7915_set_radar_background,
+#endif
 #ifdef CONFIG_NET_MEDIATEK_SOC_WED
 	.net_fill_forward_path = mt7915_net_fill_forward_path,
 #endif

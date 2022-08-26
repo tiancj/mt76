@@ -2,6 +2,7 @@
 /* Copyright (C) 2020 MediaTek Inc. */
 
 #include <linux/firmware.h>
+#include <linux/version.h>
 #include "mt76_connac2_mac.h"
 #include "mt76_connac_mcu.h"
 
@@ -2686,11 +2687,12 @@ int mt76_connac_mcu_bss_basic_tlv(struct sk_buff *skb,
 	case NL80211_IFTYPE_AP:
 		if (ieee80211_hw_check(phy->hw, SUPPORTS_MULTI_BSSID)) {
 			u8 bssid_id = vif->bss_conf.bssid_indicator;
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(5, 16, 0)
 			struct wiphy *wiphy = phy->hw->wiphy;
 
 			if (bssid_id > ilog2(wiphy->mbssid_max_interfaces))
 				return -EINVAL;
-
+#endif
 			bss->non_tx_bssid = vif->bss_conf.bssid_index;
 			bss->max_bssid = bssid_id;
 		}
