@@ -13,6 +13,7 @@
 #include <linux/leds.h>
 #include <linux/usb.h>
 #include <linux/average.h>
+#include <linux/version.h>
 #include <net/mac80211.h>
 #if LINUX_VERSION_CODE >= KERNEL_VERSION(5, 19, 0)
 #include <linux/soc/mediatek/mtk_wed.h>
